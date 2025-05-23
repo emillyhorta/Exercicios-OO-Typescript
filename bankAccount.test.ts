@@ -1,12 +1,16 @@
 export class ContaBancaria {
   public titular: string;
   public saldo: number;
-  public numeroConta: string;
+  public numeroConta: number;
+  private static contador = 1;
 
   constructor(titular: string) {
+    if (!titular || titular.trim() === "") {
+      throw new Error("Error. Nome do titular é obrigatorio");
+    }
     this.titular = titular;
     this.saldo = 0;
-    this.numeroConta = "";
+    this.numeroConta = ContaBancaria.contador++;
   }
 
   criarConta(nome: String): ContaBancaria {
@@ -92,8 +96,38 @@ export class ContaBancaria {
   }
 }
 
-/*test("saldo em conta ", () => {
-  let cliente = new ContaBancaria();
-  cliente.sacar;
-  expect(cliente.saldo).toEqual(600);
-}); */
+test("Depósito com valor válido e titular válido ", () => {
+  let conta = new ContaBancaria("Emilly");
+  expect(conta.titular).toEqual("Emilly");
+  expect(conta.saldo).toEqual(0);
+});
+
+test("Verificar se a conta criada é uma instância da classe principal", () => {
+  let conta = new ContaBancaria("Emilly");
+  expect(conta).toBeInstanceOf(ContaBancaria);
+});
+
+test("Verificar se o saldo inicial da conta é zero", () => {
+  let conta = new ContaBancaria("Emilly");
+  expect(conta.saldo).toEqual(0);
+});
+
+test("Verificar se o numero da conta é unico", () => {
+  let conta1 = new ContaBancaria("Emilly");
+  let conta2 = new ContaBancaria("João");
+  expect(conta1.numeroConta).not.toBe(conta2.numeroConta);
+});
+
+test("Verificar se os atributos da classe principal existem", () => {
+  let conta = new ContaBancaria("Emilly");
+  expect(conta).toHaveProperty("titular");
+  typeof conta.saldo == "number";
+  typeof conta.titular == "string";
+  expect(conta.numeroConta).toBeDefined();
+});
+
+test("Verificar se a classe lança erro ao tentar criar uma conta com nome vazio", () => {
+  expect(() => {
+    new ContaBancaria("");
+  }).toThrow(/Nome do titular/);
+});
