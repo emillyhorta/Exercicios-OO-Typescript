@@ -1,1 +1,5 @@
 node_modules
+bankAccount.test.js
+BankAccount.js
+jest.config.js
+test.js
